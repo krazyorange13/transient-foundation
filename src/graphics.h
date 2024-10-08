@@ -9,6 +9,9 @@
  */
 
 #define CHAR_UPPER_BLOCK "\u2580"
+// #define CHAR_UPPER_BLOCK "\xE2\x96\x92"
+// #define CHAR_UPPER_BLOCK "▀"
+// #define CHAR_UPPER_BLOCK " "
 #define CHAR_LOWER_BLOCK "\u2584"
 
 /*
@@ -56,7 +59,7 @@ typedef char color_code_t[COLOR_CODE_LENGTH];
 
 // (COLOR_CODE_LENGTH - terminator) * 2 + CHAR_UPPER_BLOCK + terminator = 18
 
-#define FRAG_CHAR_CHARS (2 + (COLOR_CODE_LENGTH - 1) * 2)
+#define FRAG_CHAR_CHARS (4 + (COLOR_CODE_LENGTH - 1) * 2)
 typedef char frag_char_chars_t[FRAG_CHAR_CHARS];
 
 // max length of window.frag_chars is uint32_t
@@ -79,6 +82,8 @@ typedef struct _frag_char
     frag lower;
 } frag_char;
 
+int frag_char_equal(frag_char *a, frag_char *b);
+
 typedef struct _window
 {
     window_coord_t rows;
@@ -88,11 +93,13 @@ typedef struct _window
 
 void create_window(window **win, uint16_t rows, uint16_t cols);
 void destroy_window(window *win);
-void display_window(window *win);
+void render_window_full(window *win);
+void render_window(window *win, window* win_prev);
 static inline window_index_t window_index
 (window *win, window_coord_t row, window_coord_t col);
 void window_set_pixel
 (window *win, window_coord_t x, window_coord_t y, color_t c);
+void window_fill_color(window *win, color_t c);
 int window_check_pixel_bounds
 (window *win, window_coord_t x, window_coord_t y);
 

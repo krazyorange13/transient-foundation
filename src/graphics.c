@@ -4,6 +4,15 @@
 
 #include "graphics.h"
 
+int frag_char_equal(frag_char *a, frag_char *b)
+{
+    if (a->lower.color == b->lower.color
+     && a->upper.color == b->upper.color)
+        return 1;
+    else
+        return 0;
+}
+
 void create_window(window **win, uint16_t rows, uint16_t cols)
 {
     (*win) = malloc(sizeof(window));
@@ -13,7 +22,7 @@ void create_window(window **win, uint16_t rows, uint16_t cols)
     
     for (int i = 0; i < rows * cols; i++)
     {
-        frag_char fc = {{COLOR_BLACK}, {COLOR_BLACK}};
+        frag_char fc = {{COLOR_MAGENTA}, {COLOR_MAGENTA}};
         (*win)->frag_chars[i] = fc;
     }
 }
@@ -23,7 +32,7 @@ void destroy_window(window *win)
     free(win);
 }
 
-void display_window(window *win)
+void render_window_full(window *win)
 {
     uint32_t display_chars_count = FRAG_CHAR_CHARS * (win->rows) * (win->cols);
     char display_chars[display_chars_count + 1];
@@ -49,6 +58,62 @@ void display_window(window *win)
     printf("%s", display_chars);
 }
 
+void render_window(window *win, window *win_prev)
+{
+    // printf("%s\n", CHAR_UPPER_BLOCK);
+    // char string[4];
+    // snprintf(string, 4, "%s", CHAR_UPPER_BLOCK);
+    // printf(string);
+    // return;
+
+    uint32_t display_chars_count = FRAG_CHAR_CHARS * (win->rows) * (win->cols);
+    char display_chars[display_chars_count + 1];
+    display_chars[0] = '\0';
+
+    window_coord_t i = 0;
+    int prev_diff = 0;
+    for (window_coord_t y = 0; y < win->rows; y++)
+    {
+        for (window_coord_t x = 0; x < win->cols; x++)
+        {
+            frag_char *fc = &win->frag_chars[i];
+            frag_char *fc_prev = &win_prev->frag_chars[i];
+            if (!frag_char_equal(fc, fc_prev))
+            {
+                frag_char_chars_t fcc;
+                if (prev_diff)
+                {
+                    snprintf(fcc, FRAG_CHAR_CHARS,
+                             "\x1b[3%d;4%dm%s", 
+                             fc->upper.color, 
+                             fc->lower.color,
+                             CHAR_UPPER_BLOCK);
+                }
+                else
+                {
+                    snprintf(fcc, FRAG_CHAR_CHARS,
+                             "\x1b[%d;%dH\x1b[3%d;4%dm%s", 
+                             y, x,
+                             fc->upper.color,
+                             fc->lower.color,
+                             CHAR_UPPER_BLOCK);
+                }
+                strcat(display_chars, fcc);
+                prev_diff = 1;
+            }
+            else
+            {
+                prev_diff = 0;
+            }
+            i++;
+        }
+    }
+
+    printf("%s", display_chars);
+    if (!prev_diff)
+        printf("\n");
+}
+
 static inline window_index_t window_index
 (window *win, window_coord_t row, window_coord_t col)
 {
@@ -66,6 +131,13 @@ void window_set_pixel
         fc->upper.color = c;
     else
         fc->lower.color = c;
+}
+
+void window_fill_color(window *win, color_t c)
+{
+    for (window_coord_t y = 0; y < win->rows * 2; y++)
+        for (window_coord_t x = 0; x < win->cols; x++)
+            window_set_pixel(win, x, y, c);
 }
 
 int window_check_pixel_bounds

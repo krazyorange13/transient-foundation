@@ -20,7 +20,15 @@ int main (int argc, char *argv[])
     
     window *win = NULL;
     create_window(&win, w.y, w.x);
-    win->frag_chars[1].lower.color = COLOR_RED;
+    for (window_coord_t i = 0; i < win->cols; i++)
+    {
+        window_set_pixel(win, i, i + 0, COLOR_RED);
+        window_set_pixel(win, i, i + 1, COLOR_YELLOW);
+        window_set_pixel(win, i, i + 2, COLOR_GREEN);
+        window_set_pixel(win, i, i + 3, COLOR_CYAN);
+        window_set_pixel(win, i, i + 4, COLOR_BLUE);
+        window_set_pixel(win, i, i + 5, COLOR_MAGENTA);
+    }
     display_window(win);
     destroy_window(win);
 

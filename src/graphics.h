@@ -66,9 +66,11 @@ typedef char frag_char_chars_t[FRAG_CHAR_CHARS];
 typedef uint16_t window_coord_t;
 typedef uint32_t window_index_t;
 
+typedef uint8_t color_t;
+
 typedef struct _frag
 {
-    uint8_t color;
+    color_t color;
 } frag;
 
 typedef struct _frag_char
@@ -79,15 +81,19 @@ typedef struct _frag_char
 
 typedef struct _window
 {
-    uint16_t rows;
-    uint16_t cols;
+    window_coord_t rows;
+    window_coord_t cols;
     frag_char *frag_chars;
 } window;
 
 void create_window(window **win, uint16_t rows, uint16_t cols);
 void destroy_window(window *win);
 void display_window(window *win);
-// static inline window_index_t window_index
-// (uint16_t row, uint16_t col, window* win);
+static inline window_index_t window_index
+(window *win, window_coord_t row, window_coord_t col);
+void window_set_pixel
+(window *win, window_coord_t x, window_coord_t y, color_t c);
+int window_check_pixel_bounds
+(window *win, window_coord_t x, window_coord_t y);
 
 #endif

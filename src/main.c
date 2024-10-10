@@ -23,29 +23,28 @@ int main (int argc, char *argv[])
 
     create_window(&win, w.y, w.x);
     create_window(&win_prev, w.y, w.x);
+    
+    window_fill_color(win, COLOR_BLACK);
 
-    // // idk why this doesn't want to work properly ;-;
-    // // imma finna bouta kms
-    // for (window_coord_t i = 0; i < win->cols; i++)
-    // {
-    //     window_set_pixel(win, i, i + 0, COLOR_RED);
-    //     window_set_pixel(win, i, i + 1, COLOR_YELLOW);
-    //     window_set_pixel(win, i, i + 2, COLOR_GREEN);
-    //     window_set_pixel(win, i, i + 3, COLOR_CYAN);
-    //     window_set_pixel(win, i, i + 4, COLOR_BLUE);
-    //     window_set_pixel(win, i, i + 5, COLOR_MAGENTA);
-    // }
+    hide_cursor();
+    
+    unsigned int i = 0;
+    while (1)
+    {
+        window_set_pixel(win, 2, 2, COLOR_RED);
+        render_window(win, win_prev);
+        copy_window(win, &win_prev);
+        if (i++ > 1000)
+            break;
+    }
 
-    window_fill_color(win, COLOR_WHITE);
-    window_set_pixel(win, 2, 1, COLOR_RED);
-    window_set_pixel(win, 3, 2, COLOR_RED);
-    window_set_pixel(win, 3, 3, COLOR_RED);
-    window_set_pixel(win, 2, 3, COLOR_RED);
-    window_set_pixel(win, 1, 3, COLOR_RED);
-
-    render_window(win, win_prev);
+    getchar();
 
     destroy_window(win);
+
+    erase_screen();
+    reset_cursor();
+    show_cursor();
 
     return 0;
 }

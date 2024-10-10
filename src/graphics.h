@@ -15,6 +15,20 @@
 #define CHAR_LOWER_BLOCK "\u2584"
 
 /*
+ * Misc ANSI escape codes
+ */
+
+#define ERASE_SCREEN "\x1b[2J"
+#define RESET_CURSOR "\x1b[H"
+#define HIDE_CURSOR "\x1b[?25l"
+#define SHOW_CURSOR "\x1b[?25h"
+
+void erase_screen();
+void reset_cursor();
+void hide_cursor();
+void show_cursor();
+
+/*
  * ANSI escape code color sequences
  */
 
@@ -91,8 +105,10 @@ typedef struct _window
     frag_char *frag_chars;
 } window;
 
-void create_window(window **win, uint16_t rows, uint16_t cols);
+void create_window(window **win, window_coord_t rows, window_coord_t cols);
+void create_window_pure(window **win, window_coord_t rows, window_coord_t cols);
 void destroy_window(window *win);
+void copy_window(window *src, window **dest);
 void render_window_full(window *win);
 void render_window(window *win, window* win_prev);
 static inline window_index_t window_index

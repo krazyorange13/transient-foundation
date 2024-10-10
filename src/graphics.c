@@ -4,6 +4,26 @@
 
 #include "graphics.h"
 
+void erase_screen()
+{
+    printf(ERASE_SCREEN);
+}
+
+void reset_cursor()
+{
+    printf(RESET_CURSOR);
+}
+
+void hide_cursor()
+{
+    printf(HIDE_CURSOR);
+}
+
+void show_cursor()
+{
+    printf(SHOW_CURSOR);
+}
+
 int frag_char_equal(frag_char *a, frag_char *b)
 {
     if (a->lower.color == b->lower.color
@@ -13,7 +33,7 @@ int frag_char_equal(frag_char *a, frag_char *b)
         return 0;
 }
 
-void create_window(window **win, uint16_t rows, uint16_t cols)
+void create_window(window **win, window_coord_t rows, window_coord_t cols)
 {
     (*win) = malloc(sizeof(window));
     (*win)->rows = rows;
@@ -27,13 +47,31 @@ void create_window(window **win, uint16_t rows, uint16_t cols)
     }
 }
 
+void create_window_pure(window **win, window_coord_t rows, window_coord_t cols)
+{
+    (*win) = malloc(sizeof(window));
+    (*win)->rows = rows;
+    (*win)->cols = cols;
+    (*win)->frag_chars = malloc(sizeof(frag_char) * rows * cols);
+}
+
 void destroy_window(window *win)
 {
     free(win);
 }
 
+void copy_window(window *src, window **dest)
+{
+    destroy_window(*dest);
+    create_window_pure(dest, src->rows, src->cols);
+    for (window_index_t i = 0; i < src->rows * src->cols; i++)
+        (*dest)->frag_chars[i] = src->frag_chars[i];
+}
+
 void render_window_full(window *win)
 {
+    reset_cursor();
+
     uint32_t display_chars_count = FRAG_CHAR_CHARS * (win->rows) * (win->cols);
     char display_chars[display_chars_count + 1];
     display_chars[0] = '\0';
@@ -60,12 +98,8 @@ void render_window_full(window *win)
 
 void render_window(window *win, window *win_prev)
 {
-    // printf("%s\n", CHAR_UPPER_BLOCK);
-    // char string[4];
-    // snprintf(string, 4, "%s", CHAR_UPPER_BLOCK);
-    // printf(string);
-    // return;
-
+    reset_cursor();
+    
     uint32_t display_chars_count = FRAG_CHAR_CHARS * (win->rows) * (win->cols);
     char display_chars[display_chars_count + 1];
     display_chars[0] = '\0';

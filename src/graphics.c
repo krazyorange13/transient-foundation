@@ -128,7 +128,7 @@ void render_window(window *win, window *win_prev)
                 {
                     snprintf(fcc, FRAG_CHAR_CHARS,
                              "\x1b[%d;%dH\x1b[3%d;4%dm%s", 
-                             y, x,
+                             y + 1, x,
                              fc->upper.color,
                              fc->lower.color,
                              CHAR_UPPER_BLOCK);
@@ -145,8 +145,6 @@ void render_window(window *win, window *win_prev)
     }
 
     printf("%s", display_chars);
-    if (!prev_diff)
-        printf("\n");
 }
 
 static inline window_index_t window_index

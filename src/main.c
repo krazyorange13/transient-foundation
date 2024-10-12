@@ -63,16 +63,6 @@ int main (int argc, char *argv[])
 
     raw_mode_disable();
 
-    // window_set_pixel(win, 0, 0, COLOR_RED);
-    // window_set_pixel(win, 0, 1, COLOR_YELLOW);
-    // window_set_pixel(win, 0, 2, COLOR_GREEN);
-    // window_set_pixel(win, 0, 3, COLOR_BLUE);
-    // window_set_pixel(win, 0, 4, COLOR_CYAN);
-
-    render_window_full(win);
-
-    getchar();
-
     destroy_window(win);
 
     erase_screen();

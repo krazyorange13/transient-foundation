@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 #include "graphics.h"
 
@@ -99,7 +100,7 @@ void render_window_full(window *win)
 void render_window(window *win, window *win_prev)
 {
     reset_cursor();
-    
+
     uint32_t display_chars_count = FRAG_CHAR_CHARS * (win->rows) * (win->cols);
     char display_chars[display_chars_count + 1];
     display_chars[0] = '\0';
@@ -160,7 +161,7 @@ void window_set_pixel
     if (!window_check_pixel_bounds(win, x, y))
         return;
 
-    frag_char *fc = &(win->frag_chars[window_index(win, y / 2, x)]);
+    frag_char *fc = &(win->frag_chars[window_index(win, (y / 2), x)]);
     if (y % 2 == 0)
         fc->upper.color = c;
     else

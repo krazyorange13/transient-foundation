@@ -2,17 +2,10 @@
 #include <stdint.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <termios.h>
 
 #include "graphics.h"
 #include "utils.h"
-
-vec2 get_console_size()
-{
-    struct winsize w;
-    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-    vec2 w_vec = {w.ws_col, w.ws_row};
-    return w_vec;
-}
 
 int main (int argc, char *argv[])
 {
@@ -23,20 +16,60 @@ int main (int argc, char *argv[])
 
     create_window(&win, w.y, w.x);
     create_window(&win_prev, w.y, w.x);
-    
+
     window_fill_color(win, COLOR_BLACK);
 
     hide_cursor();
+
+    raw_mode_enable();
+
+    window_index_t cursor_x = 0;
+    window_index_t cursor_y = 0;
     
-    unsigned int i = 0;
     while (1)
     {
-        window_set_pixel(win, 2, 2, COLOR_RED);
-        render_window(win, win_prev);
-        copy_window(win, &win_prev);
-        if (i++ > 1000)
+        escaped_char ec;
+        getchar_escaped(&ec);
+
+        if (ec.str[0] == 'q')
+        {
             break;
+        }
+        else if (ec.n == 3)
+        {
+            char cmd = ec.str[2];
+            switch (cmd)
+            {
+                case 'A':
+                    cursor_y -= 1; break;
+                case 'B':
+                    cursor_y += 1; break;
+                case 'C':
+                    cursor_x += 1; break;
+                case 'D':
+                    cursor_x -= 1; break;
+                default: break;
+            }
+        }
+
+        free(ec.str);
+
+        window_set_pixel(win, cursor_x, cursor_y, COLOR_RED);
+        render_window(win, win_prev);
+        printf("%s\n\n\x1b[0mcursor_x=%u \ncursor_y=%u ", RESET_CURSOR, cursor_x, cursor_y);
+        copy_window(win, &win_prev);
+        window_set_pixel(win, cursor_x, cursor_y, COLOR_BLACK);
     }
+
+    raw_mode_disable();
+
+    // window_set_pixel(win, 0, 0, COLOR_RED);
+    // window_set_pixel(win, 0, 1, COLOR_YELLOW);
+    // window_set_pixel(win, 0, 2, COLOR_GREEN);
+    // window_set_pixel(win, 0, 3, COLOR_BLUE);
+    // window_set_pixel(win, 0, 4, COLOR_CYAN);
+
+    render_window_full(win);
 
     getchar();
 

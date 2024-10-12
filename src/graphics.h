@@ -15,7 +15,7 @@
 #define CHAR_LOWER_BLOCK "\u2584"
 
 /*
- * Misc ANSI escape codes
+ * ANSI escape codes
  */
 
 #define ERASE_SCREEN "\x1b[2J"
@@ -27,6 +27,8 @@ void erase_screen();
 void reset_cursor();
 void hide_cursor();
 void show_cursor();
+
+#define CURSOR_UP "\x1b[A"
 
 /*
  * ANSI escape code color sequences

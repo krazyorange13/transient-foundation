@@ -35,7 +35,7 @@ void show_cursor();
  */
 
 #define COLOR_CODE_LENGTH 9
-typedef char color_code_t[COLOR_CODE_LENGTH];
+#define MOVE_CODE_LENGTH 14
 
 #define COLOR_BLACK   0
 #define COLOR_RED     1
@@ -75,7 +75,13 @@ typedef char color_code_t[COLOR_CODE_LENGTH];
 
 // (COLOR_CODE_LENGTH - terminator) * 2 + CHAR_UPPER_BLOCK + terminator = 18
 
-#define FRAG_CHAR_CHARS (4 + (COLOR_CODE_LENGTH - 1) * 2)
+#define _fcc_term 1
+#define _fcc_cclen COLOR_CODE_LENGTH - 1
+#define _fcc_movec MOVE_CODE_LENGTH - 1
+#define _fcc_fcnum 2
+#define _fcc_uhblk 3
+
+#define FRAG_CHAR_CHARS (_fcc_term + _fcc_uhblk + _fcc_fcnum * (_fcc_cclen + _fcc_movec))
 typedef char frag_char_chars_t[FRAG_CHAR_CHARS];
 
 // max length of window.frag_chars is uint32_t
@@ -110,7 +116,7 @@ typedef struct _window
 void create_window(window **win, window_coord_t rows, window_coord_t cols);
 void create_window_pure(window **win, window_coord_t rows, window_coord_t cols);
 void destroy_window(window *win);
-void copy_window(window *src, window **dest);
+void copy_window(window *src, window *dest);
 void render_window_full(window *win);
 void render_window(window *win, window* win_prev);
 static inline window_index_t window_index

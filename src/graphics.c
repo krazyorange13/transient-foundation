@@ -61,12 +61,10 @@ void destroy_window(window *win)
     free(win);
 }
 
-void copy_window(window *src, window **dest)
+void copy_window(window *src, window *dest)
 {
-    destroy_window(*dest);
-    create_window_pure(dest, src->rows, src->cols);
-    for (window_index_t i = 0; i < src->rows * src->cols; i++)
-        (*dest)->frag_chars[i] = src->frag_chars[i];
+    memcpy(dest->frag_chars, src->frag_chars, 
+           sizeof(frag_char) * src->cols * src->rows);
 }
 
 void render_window_full(window *win)
@@ -128,7 +126,7 @@ void render_window(window *win, window *win_prev)
                 {
                     snprintf(fcc, FRAG_CHAR_CHARS,
                              "\x1b[%d;%dH\x1b[3%d;4%dm%s", 
-                             y + 1, x,
+                             y + 1, x + 1,
                              fc->upper.color,
                              fc->lower.color,
                              CHAR_UPPER_BLOCK);

@@ -25,7 +25,7 @@ int main (int argc, char *argv[])
 
     window_index_t cursor_x = 0;
     window_index_t cursor_y = 0;
-    
+    uint64_t i = 0;
     while (1)
     {
         escaped_char ec;
@@ -56,9 +56,11 @@ int main (int argc, char *argv[])
 
         window_set_pixel(win, cursor_x, cursor_y, COLOR_RED);
         render_window(win, win_prev);
-        printf("%s\n\n\x1b[0mcursor_x=%u \ncursor_y=%u ", RESET_CURSOR, cursor_x, cursor_y);
-        copy_window(win, &win_prev);
+        printf("\x1b[H\n\n\n\n%llu", i);
+        copy_window(win, win_prev);
         window_set_pixel(win, cursor_x, cursor_y, COLOR_BLACK);
+
+        i++;
     }
 
     raw_mode_disable();

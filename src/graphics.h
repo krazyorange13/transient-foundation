@@ -104,7 +104,7 @@ typedef struct _frag_char
     frag lower;
 } frag_char;
 
-int frag_char_equal(frag_char *a, frag_char *b);
+static inline int frag_char_equal(frag_char *a, frag_char *b);
 
 typedef struct _window
 {

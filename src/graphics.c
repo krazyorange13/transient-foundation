@@ -25,13 +25,10 @@ void show_cursor()
     printf(SHOW_CURSOR);
 }
 
-int frag_char_equal(frag_char *a, frag_char *b)
+static inline int frag_char_equal(frag_char *a, frag_char *b)
 {
-    if (a->lower.color == b->lower.color
-     && a->upper.color == b->upper.color)
-        return 1;
-    else
-        return 0;
+    return a->lower.color == b->lower.color
+        && a->upper.color == b->upper.color;
 }
 
 void create_window(window **win, window_coord_t rows, window_coord_t cols)
@@ -116,17 +113,29 @@ void render_window(window *win, window *win_prev)
                 frag_char_chars_t fcc;
                 if (prev_diff)
                 {
-                    snprintf(fcc, FRAG_CHAR_CHARS,
-                             "\x1b[3%d;4%dm%s", 
-                             fc->upper.color, 
-                             fc->lower.color,
-                             CHAR_UPPER_BLOCK);
+                    // maybe do some benchmarking to see if even
+                    // further optimized printing is better?
+                    frag_char *last_fc = &win->frag_chars[i-1];
+                    if (frag_char_equal(fc, last_fc))
+                    {
+                        snprintf(fcc, FRAG_CHAR_CHARS,
+                                "%s",
+                                CHAR_UPPER_BLOCK);
+                    }
+                    else
+                    {
+                        snprintf(fcc, FRAG_CHAR_CHARS,
+                                "\x1b[3%d;4%dm%s", 
+                                fc->upper.color, 
+                                fc->lower.color,
+                                CHAR_UPPER_BLOCK);
+                    }
                 }
                 else
                 {
                     snprintf(fcc, FRAG_CHAR_CHARS,
                              "\x1b[%d;%dH\x1b[3%d;4%dm%s", 
-                             y + 1, x + 1,
+                             y+1, x+1,
                              fc->upper.color,
                              fc->lower.color,
                              CHAR_UPPER_BLOCK);
@@ -166,9 +175,11 @@ void window_set_pixel
 
 void window_fill_color(window *win, color_t c)
 {
-    for (window_coord_t y = 0; y < win->rows * 2; y++)
-        for (window_coord_t x = 0; x < win->cols; x++)
-            window_set_pixel(win, x, y, c);
+    for (window_index_t i = 0; i < win->rows * win->cols; i++)
+    {
+        frag_char fc = {{c}, {c}};
+        win->frag_chars[i] = fc;
+    }
 }
 
 int window_check_pixel_bounds

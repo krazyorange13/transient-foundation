@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <sys/ioctl.h>
+#include <sys/select.h>
 #include <unistd.h>
 #include <termios.h>
 
@@ -23,6 +24,7 @@ typedef struct _escaped_char
 vec2 get_console_size();
 void raw_mode_enable();
 void raw_mode_disable();
+int was_kbhit();
 void getchar_escaped(escaped_char *ec);
 
 #endif

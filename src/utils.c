@@ -10,23 +10,41 @@ vec2 get_console_size()
 
 void raw_mode_enable()
 {
-    struct termios raw;
-    tcgetattr(STDIN_FILENO, &raw);
-    raw.c_lflag &= ~(ECHO | ICANON);
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+    struct termios conf;
+    tcgetattr(STDIN_FILENO, &conf);
+    conf.c_lflag &= ~(ECHO | ICANON);
+    conf.c_cc[VMIN] = 0;  // this is poggers, non-blocking input,
+    conf.c_cc[VTIME] = 0; // but needs to get reset? could be bad
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &conf);
 }
 
 void raw_mode_disable()
 {
-    struct termios raw;
-    tcgetattr(STDIN_FILENO, &raw);
-    raw.c_lflag &= (ECHO | ICANON);
-    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+    struct termios conf;
+    tcgetattr(STDIN_FILENO, &conf);
+    conf.c_lflag &= (ECHO | ICANON);
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &conf);
+}
+
+int was_kbhit()
+{
+   struct timeval tv = { 0L, 0L };
+   fd_set fds;
+   FD_ZERO(&fds);
+   FD_SET(0, &fds);
+   return select(1, &fds, NULL, NULL, &tv);
+}
+
+char _getchar()
+{
+    char ch;
+    read(STDIN_FILENO, &ch, 1);
+    return ch;
 }
 
 void getchar_escaped(escaped_char *ec)
 {
-    char c0 = getchar();
+    char c0 = _getchar();
     if (c0 == '\n')
     {
         ec->n = 2;
@@ -55,7 +73,7 @@ void getchar_escaped(escaped_char *ec)
     }
     else
     {
-        char c1 = getchar();
+        char c1 = _getchar();
         if (c1 != '[')
         {
             ec->n = 2;
@@ -67,7 +85,7 @@ void getchar_escaped(escaped_char *ec)
         }
         else
         {
-            char c2 = getchar();
+            char c2 = _getchar();
             ec->n = 3;
             ec->str = malloc(sizeof(char) * 4);
             ec->str[0] = '\\';

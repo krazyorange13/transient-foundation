@@ -28,31 +28,34 @@ int main (int argc, char *argv[])
     uint64_t i = 0;
     while (1)
     {
-        escaped_char ec;
-        getchar_escaped(&ec);
+        if (was_kbhit())
+        {
+            escaped_char ec;
+            getchar_escaped(&ec);
 
-        if (ec.str[0] == 'q')
-        {
-            break;
-        }
-        else if (ec.n == 3)
-        {
-            char cmd = ec.str[2];
-            switch (cmd)
+            if (ec.str[0] == 'q')
             {
-                case 'A':
-                    cursor_y -= 1; break;
-                case 'B':
-                    cursor_y += 1; break;
-                case 'C':
-                    cursor_x += 1; break;
-                case 'D':
-                    cursor_x -= 1; break;
-                default: break;
+                break;
             }
-        }
+            else if (ec.n == 3)
+            {
+                char cmd = ec.str[2];
+                switch (cmd)
+                {
+                    case 'A':
+                        cursor_y -= 1; break;
+                    case 'B':
+                        cursor_y += 1; break;
+                    case 'C':
+                        cursor_x += 1; break;
+                    case 'D':
+                        cursor_x -= 1; break;
+                    default: break;
+                }
+            }
 
-        free(ec.str);
+            free(ec.str);
+        }
 
         window_set_pixel(win, cursor_x, cursor_y, COLOR_RED);
         render_window(win, win_prev);

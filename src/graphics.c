@@ -25,6 +25,10 @@ void show_cursor()
     printf(SHOW_CURSOR);
 }
 
+/*
+ * frags, chars, windows, oh my!
+ */
+
 static inline int frag_char_equal(frag_char *a, frag_char *b)
 {
     return a->lower.color == b->lower.color
@@ -36,6 +40,8 @@ void create_window(window **win, window_coord_t rows, window_coord_t cols)
     (*win) = malloc(sizeof(window));
     (*win)->rows = rows;
     (*win)->cols = cols;
+    (*win)->width = cols;
+    (*win)->height = rows * 2;
     (*win)->frag_chars = malloc(sizeof(frag_char) * rows * cols);
     
     for (int i = 0; i < rows * cols; i++)
@@ -192,4 +198,29 @@ int window_check_pixel_bounds
     if (y / 2 >= win->rows)
         return 0;
     return 1;
+}
+
+/*
+ * utility drawing functions
+ */
+
+// uses a scuffed implementation of bresenham's algorithm
+void window_draw_line
+(window *win, window_coord_t x1, window_coord_t y1, window_coord_t x2, window_coord_t y2, color_t c)
+{
+    int dx = abs(x2 - x1);
+    int dy = abs(y2 - y1);
+    int sx = x1 < x2 ? 1 : -1;
+    int sy = y1 < y2 ? 1 : -1; 
+    int err = (dx > dy ? dx : -dy) / 2;
+    int e2;
+
+    for(;;)
+    {
+        if (x1 >= 0 && y1 >= 0) window_set_pixel(win, x1, y1, c);
+        if (x1==x2 && y1==y2) break;
+        e2 = err;
+        if (e2 >-dx) { err -= dy; x1 += sx; }
+        if (e2 < dy) { err += dx; y1 += sy; }
+    }
 }

@@ -1,12 +1,17 @@
-compile:
-	@ gcc -o out src/*.c -I src/ -Wall -Ofast -march=native
+OBJ_FILES = src/main.o src/graphics.o src/utils.o
+TARGET = out
 
-lib:
-	gcc -c src/graphics.c src/utils.c -Isrc/
-	ar -rcs libtransientfoundation.a *.o
-	cp libtransientfoundation.a build/libtransientfoundation.a
-	rm libtransientfoundation.a
-	rm *.o
+$(TARGET): $(OBJ_FILES)
+	gcc -o $(TARGET) $(OBJ_FILES) -Isrc/ -Wall -Ofast -march=native
 
-test:
-	gcc -o test.out test.c -L. -ltransientfoundation -Isrc/
+$(OBJ_FILES): %.o: %.c
+	gcc -c $^ -o $@
+
+clean:
+	rm -rf src/*.o
+	rm -rf *.o
+	rm -rf libtransientfoundation.a
+
+build: $(OBJ_FILES)
+	ar -rcs build/libtransientfoundation.a $(OBJ_FILES)
+	cp src/*.h build/transientfoundation/

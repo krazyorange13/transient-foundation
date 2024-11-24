@@ -1,5 +1,5 @@
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef TRANSIENT_FOUNDATION_UTILS_H
+#define TRANSIENT_FOUNDATION_UTILS_H
 
 #include <stdlib.h>
 #include <stdint.h>

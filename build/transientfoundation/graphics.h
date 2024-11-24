@@ -1,5 +1,5 @@
-#ifndef GRAPHICS_H
-#define GRAPHICS_H
+#ifndef TRANSIENT_FOUNDATION_GRAPHICS_H
+#define TRANSIENT_FOUNDATION_GRAPHICS_H
 
 #include "utils.h"
 
@@ -128,12 +128,5 @@ void window_set_pixel
 void window_fill_color(window *win, color_t c);
 int window_check_pixel_bounds
 (window *win, window_coord_t x, window_coord_t y);
-
-/*
- * utility drawing functions
- */
-
-void window_draw_line
-(window *win, window_coord_t x1, window_coord_t y1, window_coord_t x2, window_coord_t y2, color_t c);
 
 #endif

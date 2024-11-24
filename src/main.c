@@ -75,17 +75,6 @@ int main (int argc, char *argv[])
         }
 
         window_fill_color(win, COLOR_BLACK);
-
-        window_draw_line(win, cursor_x - 2, cursor_y - 2, cursor_x + 2, cursor_y - 2, COLOR_BLUE);
-        window_draw_line(win, cursor_x + 2, cursor_y - 2, cursor_x + 2, cursor_y + 2, COLOR_BLUE);
-        window_draw_line(win, cursor_x + 2, cursor_y + 2, cursor_x - 2, cursor_y + 2, COLOR_BLUE);
-        window_draw_line(win, cursor_x - 2, cursor_y + 2, cursor_x - 2, cursor_y - 2, COLOR_BLUE);
-
-        window_draw_line(win, 2,            2,             cursor_x, cursor_y, COLOR_MAGENTA);
-        window_draw_line(win, 2,            win->height-3, cursor_x, cursor_y, COLOR_YELLOW);
-        window_draw_line(win, win->width-3, win->height-3, cursor_x, cursor_y, COLOR_YELLOW);
-        window_draw_line(win, win->width-3, 2,             cursor_x, cursor_y, COLOR_YELLOW);
-
         window_set_pixel(win, cursor_x, cursor_y, COLOR_RED);
 
         render_window(win, win_prev);

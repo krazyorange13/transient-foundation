@@ -160,7 +160,7 @@ void render_window(window *win, window *win_prev)
     printf("%s", display_chars);
 }
 
-static inline window_index_t window_index
+window_index_t window_index
 (window *win, window_coord_t row, window_coord_t col)
 {
     return col + (row * win->cols);

@@ -121,7 +121,7 @@ void destroy_window(window *win);
 void copy_window(window *src, window *dest);
 void render_window_full(window *win);
 void render_window(window *win, window* win_prev);
-static inline window_index_t window_index
+window_index_t window_index
 (window *win, window_coord_t row, window_coord_t col);
 void window_set_pixel
 (window *win, window_coord_t x, window_coord_t y, color_t c);

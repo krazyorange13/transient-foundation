@@ -13,5 +13,6 @@ clean:
 	rm -rf libtransientfoundation.a
 
 build: $(OBJ_FILES)
+	mkdir -p build
 	ar -rcs build/libtransientfoundation.a $(OBJ_FILES)
 	cp src/*.h build/transientfoundation/

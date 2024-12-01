@@ -29,7 +29,7 @@ void show_cursor()
  * frags, chars, windows, oh my!
  */
 
-static inline int frag_char_equal(frag_char *a, frag_char *b)
+int frag_char_equal(frag_char *a, frag_char *b)
 {
     return a->lower.color == b->lower.color
         && a->upper.color == b->upper.color;

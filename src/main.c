@@ -10,7 +10,7 @@
 int main (int argc, char *argv[])
 {
     vec2 w = get_console_size();
-    
+
     window *win = NULL;
     window *win_prev = NULL;
     window *other_win = NULL;
@@ -21,8 +21,9 @@ int main (int argc, char *argv[])
 
     window_fill_color(win, COLOR_BLACK);
 
-    hide_cursor();
+    struct termios conf = terminal_conf_save();
     raw_mode_enable();
+    hide_cursor();
 
     window_index_t cursor_x = 0;
     window_index_t cursor_y = 0;
@@ -83,10 +84,11 @@ int main (int argc, char *argv[])
 
     destroy_window(win);
 
-    raw_mode_disable();
     erase_screen();
     reset_cursor();
     show_cursor();
+    raw_mode_disable();
+    terminal_conf_load(conf);
 
     return 0;
 }

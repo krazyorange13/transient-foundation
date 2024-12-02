@@ -8,6 +8,18 @@ vec2 get_console_size()
     return w_vec;
 }
 
+struct termios terminal_conf_save()
+{
+	struct termios conf;
+	tcgetattr(STDIN_FILENO, &conf);
+	return conf;
+}
+
+void terminal_conf_load(struct termios conf)
+{
+	tcsetattr(STDIN_FILENO, TCSAFLUSH, &conf);
+}
+
 void raw_mode_enable()
 {
     struct termios conf;

@@ -24,6 +24,8 @@ typedef struct _escaped_char
 vec2 get_console_size();
 void raw_mode_enable();
 void raw_mode_disable();
+struct termios terminal_conf_save();
+void terminal_conf_load(struct termios conf);
 int was_kbhit();
 void getchar_escaped(escaped_char *ec);
 
